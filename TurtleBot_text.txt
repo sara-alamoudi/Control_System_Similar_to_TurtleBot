@@ -1,0 +1,119 @@
+//The code takes some time to start (about 10 sec)
+#include <LiquidCrystal.h> // Library
+#define P1A 9 // define pin 9 
+#define P2A 6 // define pin 11
+#define P1B 10 // define pin 10
+#define P2B 11 // define pin 11 
+int number = 0;
+int position = 0;
+float inches = 0;
+float cm = 0;
+
+
+
+//initialize the library with the numbers of the interface pins
+LiquidCrystal lcd(13, 12, 5, 4, 3, 2);
+
+void setup() {
+// Setup for the LCD  
+delay(200);
+lcd.begin(16,2);   // set up the LCD's number of columns and rows:                                                   
+lcd.setCursor(0,0);
+lcd.print("  Distance    ");
+lcd.setCursor(0,1);
+lcd.print("  Measurement  ");
+delay(1000);
+lcd.clear(); // to read the measurement
+pinMode(7, INPUT);
+pinMode(P1A, OUTPUT);// define pin as OUTPUT for P1A
+pinMode(P2A, OUTPUT);// define pin as OUTPUT for P2A
+pinMode(P1B, OUTPUT);// define pin as OUTPUT for P1B
+pinMode(P2B, OUTPUT);// define pin as OUTPUT for P2B
+ 
+Serial.begin(9600);// setup Serial Monitor to display information  
+Serial.println("Welcome");
+Serial.println("Enter 'F' for Forward, 'R' for Right, 'L' for Left and 'B' for Backward"); // print in the Serial Monitor
+
+}
+void loop() {
+  
+ while (Serial.available() == 0){/*do nothing*/} //Wait for an input from the user
+if (Serial.available()){ //Read the input
+   char ch = Serial.read();
+  if (ch == 'F' || ch == 'R' || ch == 'L' || ch == 'B'){
+      Serial.println("Enter The Speed Value(From 0 to 255):"); //max=255-->9393rpm ,min=0
+    delay(5);
+  }
+  //For speed
+    while (Serial.available() == 0){}
+while (Serial.available()>0){
+      byte spd = Serial.read();//Read the entered speed
+      if (spd >= '0' && spd <= '9'){ //If the input is a number
+        number = (number * 10) + (spd - '0'); //Convert ASCII value into the original number
+        delay(5); 
+      }}        
+        Serial.print(" Rotating speed: "); 
+        Serial.println(number);//print actual speed value
+        position = number; //to use position for the next if conditions, where number will reset to 0 and entered the loop again 
+        number = 0; //reset the number's value to 0 for the next reading
+        Serial.println("Enter 'F' for Forward, 'R' for Right, 'L' for Left and 'B' for Backward");
+  // both motors' values are positive
+  if (ch == 'F' ){
+  analogWrite(9,position);
+  analogWrite(6,LOW);
+  analogWrite(10,position);
+  analogWrite(11,LOW);
+  }
+  //both motors' values are negative
+    if (ch == 'B' ){
+  analogWrite(9,LOW);
+  analogWrite(6,position);
+  analogWrite(10,LOW);
+  analogWrite(11,position);
+  }
+  // the motor on the left is positive, while the other is negative 
+    if (ch == 'L' ){
+  analogWrite(9,LOW);
+  analogWrite(6,position);
+  analogWrite(10,position);
+  analogWrite(11,LOW);
+  }
+    // the motor on the right is positive, while the other is negative 
+    if (ch == 'R' ){
+  analogWrite(9,position);
+  analogWrite(6,LOW);
+  analogWrite(10,LOW);
+  analogWrite(11,position);
+    }}
+
+lcd.clear(); // To read the next measurement 
+  
+  cm = 0.017385 * readUltrasonicDistance(7);//Read Distance
+  inches = (cm / 2.54);
+  
+  lcd.setCursor(0,0);//Print measurement in cm
+  lcd.print("cm: ");
+  lcd.setCursor(4,0);
+  lcd.print(cm);
+  
+  lcd.setCursor(0,1);//Print measurement in inches
+  lcd.print("inch: ");
+  lcd.setCursor(6,1);
+  lcd.print(inches);
+  
+  delay(1000);
+}
+
+long readUltrasonicDistance(int pin)
+{
+  pinMode(pin, OUTPUT);  // Clear the trigger
+  digitalWrite(pin, LOW);
+  delayMicroseconds(2);
+  // Sets the pin on HIGH state for 10 micro seconds
+  digitalWrite(pin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(pin, LOW);
+  pinMode(pin, INPUT);
+  // Reads the pin, and returns the sound wave travel time in microseconds
+  return pulseIn(pin, HIGH);
+}
