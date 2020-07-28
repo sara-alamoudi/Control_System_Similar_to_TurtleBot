@@ -4,13 +4,13 @@ The system was created using TinckerCad
 The components of the circuit were as following:
 
 - Arduino Uno
-- UltraSonic Distance Sensor
-- Battery
-- Two DC Motors
-- LCD 
+- Two DC Motors(each moves in two Directions (clockwise and counterclockwise ) to demonstrate the four directions(right, left, forward, and backward))
+- Battery(for charging the motors)
+- UltraSonic Distance Sensor(to measure the distance)
+- LCD(displays the distance)
+- Potentiometer(Controls the brightness of the LCD)
 - Breadboard Small
 - Breadboard Mini
-- Potentiometer(Control the lighting of the LCD)
 - Resistor
 
 [Click here to see the circuit](https://www.tinkercad.com/things/fXz71UguFjK)
