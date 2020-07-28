@@ -15,6 +15,8 @@ The components of the circuit were as following:
 
 [Click here to see the circuit](https://www.tinkercad.com/things/fXz71UguFjK)
 
-##Refrences:
+## Refrences:
+
 https://www.youtube.com/watch?v=NdVszQurdPQ&t=10s
+
 https://www.youtube.com/watch?v=tlMbca59Q-M&t=1267s
